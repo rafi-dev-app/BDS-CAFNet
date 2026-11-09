@@ -8,7 +8,7 @@
 **An Explainable Hybrid Deep Learning Framework for Multi-Class Dermatological Image Classification**
 
 <p align="center">
-  <img src="docs/assets/bds-cafnet-banner.png" width="100%" alt="BDS-CAFNet Project Banner">
+  <img src="docs/assets/bds-cafnet-banner.png.jpg" width="100%" alt="BDS-CAFNet Project Banner">
 </p>
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)](https://www.python.org/)
