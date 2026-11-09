@@ -67,7 +67,7 @@ BDS-CAFNet follows a dual-branch architecture in which two complementary backbon
 
 <div align="center">
 
-<img src="docs/architecture.svg" width="100%" alt="BDS-CAFNet Dual-Branch Architecture">
+<img src="docs/result/proposed_model_overview.svg" width="100%" alt="BDS-CAFNet Dual-Branch Architecture">
 
 **Figure 1. Overall architecture of the proposed BDS-CAFNet framework.**
 
@@ -150,7 +150,7 @@ The original images were stratified into training, validation, and testing parti
 
 <div align="center">
 
-<img src="docs/results/dataset_samples.png" width="100%" alt="Dermatological Dataset Samples">
+<img src="docs/result/dataset_samples.png" width="100%" alt="Dermatological Dataset Samples">
 
 **Figure 2. Representative samples from the dermatological dataset.**
 
@@ -171,7 +171,7 @@ The applied operations include:
 
 <div align="center">
 
-<img src="docs/results/preprocessing_grid.png" width="100%" alt="Image Preprocessing Visualization">
+<img src="docs/result/preprocessing_grid.png" width="100%" alt="Image Preprocessing Visualization">
 
 **Figure 3. Visual representation of the image preprocessing pipeline.**
 
@@ -202,7 +202,7 @@ The confusion matrix presents the class-wise prediction distribution and illustr
 
 <div align="center">
 
-<img src="docs/results/confusion_matrix.png" width="90%" alt="BDS-CAFNet Confusion Matrix">
+<img src="docs/result/confusion_matrix.png" width="90%" alt="BDS-CAFNet Confusion Matrix">
 
 **Figure 4. Confusion matrix of BDS-CAFNet on the held-out test set.**
 
@@ -214,7 +214,7 @@ The Receiver Operating Characteristic (ROC) curve illustrates the discrimination
 
 <div align="center">
 
-<img src="docs/results/roc_curve.png" width="90%" alt="Multi-class ROC Curve">
+<img src="docs/result/roc_curve.png" width="90%" alt="Multi-class ROC Curve">
 
 **Figure 5. Multi-class ROC curve with macro AUC of 0.9998.**
 
@@ -226,7 +226,7 @@ The training curves illustrate the model's optimization behaviour and its perfor
 
 <div align="center">
 
-<img src="docs/results/training_curve.png" width="90%" alt="BDS-CAFNet Training Curves">
+<img src="docs/result/Training Curve.png" width="90%" alt="BDS-CAFNet Training Curves">
 
 **Figure 6. Training and validation performance curves.**
 
@@ -244,7 +244,7 @@ BDS-CAFNet was also compared with its individual backbone architectures to evalu
 
 <div align="center">
 
-<img src="docs/results/hybrid_comparison.png" width="90%" alt="Comparison with Individual Backbones">
+<img src="docs/result/hybrid_comparison.png" width="90%" alt="Comparison with Individual Backbones">
 
 **Figure 7. Performance comparison between BDS-CAFNet and individual backbone architectures.**
 
@@ -262,7 +262,7 @@ Grad-CAM highlights image regions that contribute to the model's prediction by g
 
 <div align="center">
 
-<img src="docs/results/gradcam.png" width="100%" alt="Grad-CAM Visualization">
+<img src="docs/result/gradcam.png" width="100%" alt="Grad-CAM Visualization">
 
 **Figure 8. Grad-CAM visualization of dermatological image predictions.**
 
@@ -274,7 +274,7 @@ Grad-CAM++ provides an additional gradient-based visualization approach for exam
 
 <div align="center">
 
-<img src="docs/results/gradcam_plus_plus.png" width="100%" alt="Grad-CAM++ Visualization">
+<img src="docs/result/gradcam_plus_plus.png" width="100%" alt="Grad-CAM++ Visualization">
 
 **Figure 9. Grad-CAM++ visualization of the proposed framework.**
 
@@ -286,7 +286,7 @@ The CAFM attention maps provide insight into the interaction between local Dense
 
 <div align="center">
 
-<img src="docs/results/cafm_attention.png" width="100%" alt="CAFM Cross-Attention Visualization">
+<img src="docs/result/cafm_attention.png" width="100%" alt="CAFM Cross-Attention Visualization">
 
 **Figure 10. Cross-attention visualization generated from the CAFM module.**
 
@@ -298,7 +298,7 @@ t-SNE is used to visualize the distribution of learned feature representations i
 
 <div align="center">
 
-<img src="docs/results/tsne_features.png" width="85%" alt="t-SNE Feature Visualization">
+<img src="docs/result/tsne_features.png" width="85%" alt="t-SNE Feature Visualization">
 
 **Figure 11. t-SNE visualization of learned feature representations.**
 
