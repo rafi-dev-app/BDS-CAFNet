@@ -1,407 +1,346 @@
+ 
+<div align="center">
+
 # BDS-CAFNet
-### DenseNet–Swin Cross-Attention Fusion Network for Explainable Multi-Class Skin Disease Classification
+
+### DenseNet–Swin Cross-Attention Fusion Network
+
+**An Explainable Hybrid Deep Learning Framework for Multi-Class Dermatological Image Classification**
 
 <p align="center">
-  <strong>An Explainable Hybrid CNN–Transformer Framework for Dermatological Image Classification</strong>
+  <img src="docs/assets/bds-cafnet-banner.png" width="100%" alt="BDS-CAFNet Project Banner">
 </p>
 
-<p align="center">
-  <img src="docs/assets/bds-cafnet-banner.png" alt="BDS-CAFNet Research Banner" width="100%">
-</p>
+[![Python](https://img.shields.io/badge/Python-3.11-blue?logo=python)](https://www.python.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.10.0-ee4c2c?logo=pytorch)](https://pytorch.org/)
+[![Architecture](https://img.shields.io/badge/Architecture-CNN%20%2B%20Transformer-7c3aed)](#model-architecture)
+[![Classes](https://img.shields.io/badge/Classes-15-0891b2)](#dataset)
+[![Explainable AI](https://img.shields.io/badge/Explainable-AI-16a34a)](#explainable-ai)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Framework-PyTorch-red?logo=pytorch" alt="PyTorch">
-  <img src="https://img.shields.io/badge/Architecture-CNN%20%2B%20Transformer-blue" alt="Hybrid Architecture">
-  <img src="https://img.shields.io/badge/Classes-15-purple" alt="15 Classes">
-  <img src="https://img.shields.io/badge/Explainable%20AI-Grad--CAM%2B%2B-green" alt="Explainable AI">
-  <img src="https://img.shields.io/badge/Research-Medical%20AI-orange" alt="Medical AI">
-</p>
+**Combining local visual features, global contextual information, and cross-attention fusion for explainable dermatological image classification.**
+
+</div>
 
 ---
 
 ## Overview
 
-Skin diseases present significant diagnostic challenges due to visual similarities between different conditions and limited access to dermatological expertise in resource-constrained healthcare settings.
+BDS-CAFNet is an explainable hybrid deep learning framework designed for multi-class dermatological image classification. The framework combines the local feature extraction capability of **DenseNet201** with the global contextual modelling capability of **Swin Transformer-Tiny** through a dedicated **Cross-Attention Fusion Module (CAFM)**.
 
-To address these challenges, this research introduces **BDS-CAFNet (DenseNet–Swin Cross-Attention Fusion Network)**, an explainable hybrid deep learning framework designed for multi-class skin disease classification using primary clinical dermatological images collected in Bangladesh.
+The proposed architecture is developed to address the visual similarities among dermatological conditions and the challenges of limited primary clinical image availability in resource-constrained healthcare environments such as Bangladesh.
 
-The proposed architecture combines the local feature extraction capabilities of **DenseNet201** with the global contextual modelling capabilities of **Swin Transformer-Tiny**. A custom **Cross-Attention Fusion Module (CAFM)** dynamically integrates the complementary feature representations, followed by **Coordinate Attention (CA)** to refine spatially informative features before final classification.
+Unlike a conventional single-backbone model, BDS-CAFNet uses two parallel feature extraction branches and a structured attention-based fusion strategy to learn complementary representations from dermatological images.
 
-The framework also incorporates multiple Explainable Artificial Intelligence (XAI) techniques to investigate the visual regions contributing to model predictions.
+## Key Highlights
 
-### Key Highlights
-
-- Hybrid dual-branch architecture integrating DenseNet201 and Swin Transformer-Tiny.
-- Custom Cross-Attention Fusion Module for adaptive local-global feature integration.
-- Coordinate Attention for spatially aware feature refinement.
-- Primary clinical dataset comprising 1,850 images from 210 consenting patients.
-- Multi-class classification across 15 dermatological categories.
-- Clinically motivated preprocessing and partition-wise data augmentation.
-- Hybrid Focal–Dice loss and two-phase discriminative fine-tuning.
-- Multi-level explainability using Grad-CAM, Grad-CAM++, CAFM attention maps and t-SNE.
-- Evaluation using held-out testing and stratified five-fold cross-validation.
-
----
+- **Hybrid Architecture:** Parallel DenseNet201 and Swin Transformer-Tiny branches.
+- **Cross-Attention Fusion:** Integrates local and global feature representations using CAFM.
+- **Spatial Feature Refinement:** Coordinate Attention enhances informative spatial representations.
+- **Explainable AI:** Grad-CAM, Grad-CAM++, CAFM attention visualization, and t-SNE analysis.
+- **Primary Clinical Dataset:** 1,850 original images collected from 210 consenting patients.
+- **Multi-Class Classification:** 15 dermatological categories.
+- **Class-Balanced Training:** 7,500 augmented images across training, validation, and test partitions.
 
 ## Research Performance
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Test%20Accuracy-97.87%25-success?style=for-the-badge" alt="Accuracy">
-  <img src="https://img.shields.io/badge/Macro%20F1--Score-97.86%25-blue?style=for-the-badge" alt="F1 Score">
-  <img src="https://img.shields.io/badge/Macro%20AUC-0.9998-purple?style=for-the-badge" alt="AUC">
-</p>
+<div align="center">
 
-| Evaluation Metric | Reported Performance |
+| Evaluation Metric | Performance |
 |:---|---:|
 | Test Accuracy | **97.87%** |
-| Macro Precision | 97.97% |
-| Macro Recall | 97.87% |
+| Macro Precision | **97.97%** |
+| Macro Recall | **97.87%** |
 | Macro F1-Score | **97.86%** |
-| Macro ROC-AUC | **0.9998** |
-| Five-Fold Mean Accuracy | **99.04% ± 0.39%** |
-| Five-Fold Mean Macro AUC | 0.9998 |
+| Macro AUC | **0.9998** |
+| Five-Fold CV Accuracy | **99.04 ± 0.39%** |
+| Five-Fold CV Macro AUC | **0.9998** |
 
-*Results are reported from the experimental evaluation described in the thesis. Five-fold cross-validation results are reported separately from the held-out test results.*
+</div>
+
+The held-out test results and five-fold cross-validation results are reported separately. The cross-validation results are based on the study's augmented dataset.
 
 ---
 
-## Proposed Architecture
+## Model Architecture
 
-### BDS-CAFNet: Hybrid Dual-Branch Framework
+BDS-CAFNet follows a dual-branch architecture in which two complementary backbones independently extract dermatological image features. Their representations are integrated through cross-attention and further refined before final classification.
 
-The proposed network processes a preprocessed dermatological image through two parallel feature extraction branches.
+<div align="center">
 
-- **DenseNet201:** Extracts fine-grained local features, including lesion texture, colour variations and edge characteristics.
-- **Swin Transformer-Tiny:** Learns global contextual information and spatial relationships through shifted-window self-attention.
-- **CAFM:** Integrates local and global representations through multi-head cross-attention.
-- **Coordinate Attention:** Refines the fused representation while preserving spatial information.
-- **Classifier:** Produces the final probability distribution over 15 dermatological categories.
+<img src="docs/architecture.svg" width="100%" alt="BDS-CAFNet Dual-Branch Architecture">
 
-### Architecture Workflow
+**Figure 1. Overall architecture of the proposed BDS-CAFNet framework.**
 
-```mermaid
-flowchart TD
-    A["Input Clinical Skin Image<br/>224 × 224 × 3"]
-    B["Image Preprocessing<br/>CLAHE, Gamma Correction,<br/>Denoising and Sobel Enhancement"]
+</div>
 
-    A --> B
+### 1. Input Image
 
-    B --> C["DenseNet201<br/>CNN Branch"]
-    B --> D["Swin Transformer-Tiny<br/>Transformer Branch"]
+The input dermatological image is preprocessed and resized to **224 × 224 × 3** before being forwarded to both feature extraction branches.
 
-    C --> E["Local Feature Representation<br/>49 Query Tokens"]
-    D --> F["Global Feature Representation<br/>49 Key-Value Tokens"]
+### 2. DenseNet201 Branch — Local Feature Extraction
 
-    E --> G["Cross-Attention Fusion Module<br/>CAFM"]
-    F --> G
+DenseNet201 is employed as the convolutional feature extraction branch.
 
-    G --> H["Coordinate Attention<br/>Spatial Feature Refinement"]
+It captures important local visual patterns, including:
 
-    H --> I["Fully Connected Layer"]
-    I --> J["Softmax Classifier"]
-    J --> K["15-Class Prediction"]
+- Skin texture and colour variations.
+- Lesion boundaries and edges.
+- Fine-grained visual structures.
+- Local dermatological characteristics.
 
-    K --> L["Explainable AI Analysis<br/>Grad-CAM, Grad-CAM++,<br/>CAFM Attention and t-SNE"]
+### 3. Swin Transformer-Tiny Branch — Global Contextual Modelling
 
-    style A fill:#dbeafe,stroke:#2563eb,color:#111827
-    style G fill:#ede9fe,stroke:#7c3aed,color:#111827
-    style H fill:#fef3c7,stroke:#d97706,color:#111827
-    style K fill:#dcfce7,stroke:#16a34a,color:#111827
-```
+Swin Transformer-Tiny is used to learn global contextual and spatial relationships from the input image.
 
-<p align="center">
-  <img src="docs/architecture.svg" alt="BDS-CAFNet Detailed Architecture" width="100%">
-</p>
+Its shifted-window self-attention mechanism helps capture:
 
-### 1. DenseNet201 Branch
-
-DenseNet201 serves as the convolutional feature extraction backbone.
-
-Its dense connectivity pattern facilitates feature reuse and supports the extraction of detailed local information.
-
-The branch focuses on:
-
-- Fine-grained lesion texture.
-- Colour and appearance variations.
-- Local boundaries and structural patterns.
-- Discriminative visual characteristics.
-
-### 2. Swin Transformer Branch
-
-Swin Transformer-Tiny operates in parallel with DenseNet201.
-
-Its shifted-window self-attention mechanism captures spatial relationships and contextual information that may not be fully represented by conventional convolutional operations.
-
-The branch focuses on:
-
+- Long-range contextual information.
+- Spatial relationships between image regions.
 - Global lesion distribution.
-- Spatial relationships.
-- Contextual feature dependencies.
 - Broader visual patterns.
 
-### 3. Cross-Attention Fusion Module (CAFM)
+### 4. Cross-Attention Fusion Module (CAFM)
 
-CAFM is the central feature-integration component of BDS-CAFNet.
+The Cross-Attention Fusion Module is the central fusion component of BDS-CAFNet.
 
-Instead of simply concatenating the two feature representations, the module performs cross-attention to establish adaptive interactions between local CNN features and global Transformer features.
+It integrates the complementary feature representations extracted by DenseNet201 and Swin Transformer-Tiny.
 
-The attention mechanism is formulated as:
+The fusion process uses:
 
-\[
-\operatorname{Attention}(Q,K,V)
-=
-\operatorname{Softmax}
-\left(
-\frac{QK^T}{\sqrt{d_k}}
-\right)V
-\]
+- **Query (Q):** DenseNet201 local features.
+- **Key (K):** Swin Transformer global features.
+- **Value (V):** Swin Transformer global features.
 
-Where:
+Multi-head cross-attention allows the local feature representation to interact with global contextual information, producing a more integrated feature representation.
 
-- **Q (Query):** DenseNet201 local feature tokens.
-- **K (Key):** Swin Transformer global feature tokens.
-- **V (Value):** Swin Transformer global feature tokens.
-- \(d_k\): Key dimension.
+### 5. Coordinate Attention
 
-The implementation performs a 49 × 49 cross-attention operation per image, using 49 CNN query tokens and 49 Transformer key-value tokens.
+Following cross-attention fusion, Coordinate Attention is applied to refine the fused representation.
 
-This allows local lesion features to selectively incorporate relevant global contextual information.
+It helps emphasize informative spatial regions and preserve relevant positional information for subsequent classification.
 
-### 4. Coordinate Attention
+### 6. Classification Head
 
-Following cross-attention fusion, Coordinate Attention refines the fused feature representation.
+The refined feature representation is passed through a fully connected classification layer followed by Softmax activation.
 
-It incorporates directional spatial information along the horizontal and vertical dimensions, helping the network preserve location-sensitive information while improving feature discrimination.
-
-### 5. Classification Head
-
-The refined feature representation is passed through the fully connected classification layer and Softmax activation to generate probabilities for the 15 target categories.
+The final output represents the predicted probabilities across **15 dermatological classes**.
 
 ---
 
-## Dataset Description
+## Dataset
 
-The proposed framework was developed using a primary clinical dermatological image dataset collected in Bangladesh.
+The proposed framework was evaluated using a primary clinical dermatological dataset collected at the **Bangladesh Institute of Dermatology, STD and AIDS**.
 
 | Dataset Information | Description |
 |:---|:---|
 | Original Images | 1,850 |
-| Patients | 210 consenting patients |
-| Disease Categories | 15 |
-| Input Resolution | 224 × 224 × 3 |
-| Dataset Source | Bangladesh Institute of Dermatology, STD and AIDS |
-| Dataset Type | Primary Clinical Images |
+| Patients | 210 |
+| Target Categories | 15 |
+| Training Split | 80% |
+| Validation Split | 10% |
+| Testing Split | 10% |
+| Final Training Images | 6,000 |
+| Final Validation Images | 750 |
+| Final Testing Images | 750 |
+| Total Augmented Images | **7,500** |
 
-### Dataset Splitting
+The original images were stratified into training, validation, and testing partitions before augmentation. Augmentation was then performed independently within each partition to prevent augmented-image overlap across the partitions.
 
-The original images were stratified into training, validation and testing partitions before augmentation to reduce the risk of data leakage between partitions.
+### Dataset Samples
 
-| Partition | Split | Balanced Images | Images per Class |
-|:---|---:|---:|---:|
-| Training | 80% | 6,000 | 400 |
-| Validation | 10% | 750 | 50 |
-| Testing | 10% | 750 | 50 |
-| **Total** | **100%** | **7,500** | **500** |
+<div align="center">
+
+<img src="docs/results/dataset_samples.png" width="100%" alt="Dermatological Dataset Samples">
+
+**Figure 2. Representative samples from the dermatological dataset.**
+
+</div>
+
+### Data Preprocessing
+
+The preprocessing pipeline was designed to improve image quality and enhance relevant dermatological features.
+
+The applied operations include:
+
+1. Contrast Limited Adaptive Histogram Equalization (CLAHE).
+2. Gamma Correction.
+3. Non-Local Means Denoising.
+4. Sobel Edge Enhancement.
+5. Image Resizing to 224 × 224.
+6. ImageNet Normalization.
+
+<div align="center">
+
+<img src="docs/results/preprocessing_grid.png" width="100%" alt="Image Preprocessing Visualization">
+
+**Figure 3. Visual representation of the image preprocessing pipeline.**
+
+</div>
 
 ### Data Augmentation
 
-Class-wise augmentation was applied independently within each partition to achieve balanced class distributions.
+The augmentation strategy was applied independently to each dataset partition to improve class balance and support model generalization.
 
-The augmentation strategy included:
+| Partition | Before Augmentation | After Augmentation |
+|:---|---:|---:|
+| Training | 1,476 | 6,000 |
+| Validation | 180 | 750 |
+| Testing | 194 | 750 |
+| **Total** | **1,850** | **7,500** |
 
-- Horizontal flipping.
-- Bounded rotation.
-- Translation.
-- Brightness adjustment.
-
-The original partition assignments were maintained during augmentation.
-
-**Important:** The 7,500 images represent the balanced augmented experimental dataset, not 7,500 independently collected clinical images.
-
-### Dataset Privacy
-
-The original clinical dataset is not included in this public repository because of patient privacy and clinical data governance considerations.
-
-Dataset access and redistribution require appropriate institutional authorization.
-
-See [`data/README.md`](data/README.md) for additional information.
-
----
-
-## Image Preprocessing
-
-A quality-conscious preprocessing pipeline was adopted to improve image consistency and preserve diagnostically relevant visual information.
-
-### Preprocessing Operations
-
-| Operation | Purpose |
-|:---|:---|
-| CLAHE | Local contrast enhancement |
-| Gamma Correction | Illumination adjustment |
-| Non-Local Means Denoising | Noise reduction |
-| Sobel Edge Detection | Lesion boundary enhancement |
-| Image Resizing | Standardization to 224 × 224 |
-| ImageNet Normalization | Input normalization |
-
-The Sobel edge representation is combined with the original image to provide edge-enhanced input information.
-
-<p align="center">
-  <img src="results/figures/preprocessing_pipeline.png" alt="Image Preprocessing Pipeline" width="100%">
-</p>
-
----
-
-## Training Methodology
-
-BDS-CAFNet was optimized using a two-phase transfer learning strategy.
-
-### Phase 1: Frozen Warm-Up
-
-The initial phase focuses on training newly introduced fusion and classification components while preserving the pretrained backbone representations according to the defined freezing policy.
-
-- Duration: 10 epochs.
-- Learning rate: 1 × 10⁻⁴.
-- Best validation macro F1-score: 0.9285.
-
-### Phase 2: Discriminative Fine-Tuning
-
-The second phase introduces discriminative fine-tuning with separate learning rates for pretrained backbones and newly introduced modules.
-
-- Backbone learning rate: 1 × 10⁻⁵.
-- New module learning rate: 1 × 10⁻⁴.
-- Early stopping based on validation macro F1-score.
-- Best validation macro F1-score: 0.9960 at epoch 16.
-
-### Training Configuration
-
-| Hyperparameter | Configuration |
-|:---|:---|
-| Deep Learning Framework | PyTorch 2.10.0 |
-| GPU Platform | Kaggle |
-| GPU | NVIDIA Tesla T4 (16 GB) |
-| CUDA | 12.8 |
-| Input Resolution | 224 × 224 × 3 |
-| Batch Size | 16 |
-| Random Seed | 42 |
-| Optimizer | AdamW |
-| Weight Decay | 0.05 |
-| Learning Rate Scheduler | CosineAnnealingLR |
-| Minimum Learning Rate | 1 × 10⁻⁶ |
-| Loss Function | 0.6 Focal + 0.4 Dice |
-| Focal Loss Gamma | 2.0 |
-| Focal Loss Alpha | 0.25 |
-| Gradient Clipping | 1.0 |
-| Early Stopping Patience | 8 |
-| Training Duration | Approximately 52 minutes |
-
-### Computational Complexity
-
-| Metric | Value |
-|:---|---:|
-| Total Parameters | 49,416,491 |
-| Trainable Parameters | 46,046,889 |
-| Frozen Parameters | 3,369,602 |
-| Computational Cost | 8.87 GMACs |
-| FLOPs | 17.75 GFLOPs |
-
-The complete training process was conducted in approximately 52 minutes under the reported single-GPU experimental environment.
+The augmentation operations included horizontal flipping, bounded rotation, translation, and brightness adjustment.
 
 ---
 
 ## Experimental Results
 
-### Baseline Model Comparison
+The proposed BDS-CAFNet framework was evaluated using a held-out test set and five-fold cross-validation.
 
-The proposed framework was compared against standalone CNN and Transformer architectures.
+### Confusion Matrix
+
+The confusion matrix presents the class-wise prediction distribution and illustrates the classification performance across the 15 dermatological categories.
+
+<div align="center">
+
+<img src="docs/results/confusion_matrix.png" width="90%" alt="BDS-CAFNet Confusion Matrix">
+
+**Figure 4. Confusion matrix of BDS-CAFNet on the held-out test set.**
+
+</div>
+
+### ROC Curve Analysis
+
+The Receiver Operating Characteristic (ROC) curve illustrates the discrimination capability of the proposed framework across multiple dermatological classes.
+
+<div align="center">
+
+<img src="docs/results/roc_curve.png" width="90%" alt="Multi-class ROC Curve">
+
+**Figure 5. Multi-class ROC curve with macro AUC of 0.9998.**
+
+</div>
+
+### Training and Validation Curves
+
+The training curves illustrate the model's optimization behaviour and its performance progression during the training process.
+
+<div align="center">
+
+<img src="docs/results/training_curve.png" width="90%" alt="BDS-CAFNet Training Curves">
+
+**Figure 6. Training and validation performance curves.**
+
+</div>
+
+### Comparison with Individual Backbones
+
+BDS-CAFNet was also compared with its individual backbone architectures to evaluate the contribution of hybrid feature learning and attention-based fusion.
 
 | Model | Test Accuracy |
 |:---|---:|
-| **BDS-CAFNet** | **97.87%** |
 | DenseNet201 | 95.73% |
-| Swin Transformer | 94.27% |
+| Swin Transformer-Tiny | 94.27% |
+| **BDS-CAFNet** | **97.87%** |
 
-The proposed hybrid architecture achieved higher test accuracy than its two standalone backbone counterparts in the reported experiments.
+<div align="center">
 
-### Test Performance Visualization
+<img src="docs/results/hybrid_comparison.png" width="90%" alt="Comparison with Individual Backbones">
 
-<p align="center">
-  <img src="results/figures/confusion_matrix.png" alt="BDS-CAFNet Confusion Matrix" width="85%">
-</p>
+**Figure 7. Performance comparison between BDS-CAFNet and individual backbone architectures.**
 
-<p align="center">
-  <em>Confusion matrix on the held-out test set.</em>
-</p>
-
-<p align="center">
-  <img src="results/figures/roc_curve.png" alt="Multi-Class ROC Curve" width="85%">
-</p>
-
-<p align="center">
-  <em>Multi-class ROC analysis with a macro-average AUC of 0.9998.</em>
-</p>
-
-### Five-Fold Cross-Validation
-
-Stratified five-fold cross-validation was conducted to evaluate performance across different data partitions.
-
-| Metric | Result |
-|:---|---:|
-| Mean Accuracy | 99.04% |
-| Standard Deviation | ±0.39% |
-| Mean Macro AUC | 0.9998 |
-
-These results are reported separately from the held-out test evaluation.
+</div>
 
 ---
 
-## Explainable Artificial Intelligence (XAI)
+## Explainable AI
 
-Model interpretability is an important component of the proposed framework.
+Interpretability is an important component of the proposed framework. Several visualization techniques were used to investigate the learned representations and identify influential image regions.
 
-Multiple complementary visualization techniques were used to investigate the learned representations and identify the visual regions contributing to predictions.
+### Grad-CAM Visualization
 
-### 1. Grad-CAM
+Grad-CAM highlights image regions that contribute to the model's prediction by generating class-specific activation maps.
 
-Grad-CAM provides gradient-based visual explanations by highlighting image regions associated with class predictions.
+<div align="center">
 
-### 2. Grad-CAM++
+<img src="docs/results/gradcam.png" width="100%" alt="Grad-CAM Visualization">
 
-Grad-CAM++ provides a complementary gradient-based localization approach for investigating class-discriminative regions.
+**Figure 8. Grad-CAM visualization of dermatological image predictions.**
 
-### 3. CAFM Attention Visualization
+</div>
 
-CAFM attention maps visualize interactions between local CNN query tokens and global Transformer key-value tokens.
+### Grad-CAM++ Visualization
 
-### 4. t-SNE Visualization
+Grad-CAM++ provides an additional gradient-based visualization approach for examining important image regions associated with model predictions.
 
-t-SNE is used to visualize the distribution and separation of learned feature representations.
+<div align="center">
 
-### Explainability Results
+<img src="docs/results/gradcam_plus_plus.png" width="100%" alt="Grad-CAM++ Visualization">
 
-<p align="center">
-  <img src="results/explainability/gradcam_densenet.png" alt="DenseNet201 Grad-CAM Visualization" width="80%">
-</p>
-<p align="center"><em>DenseNet201 branch visualization.</em></p>
+**Figure 9. Grad-CAM++ visualization of the proposed framework.**
 
-<p align="center">
-  <img src="results/explainability/gradcam_swin.png" alt="Swin Transformer Grad-CAM Visualization" width="80%">
-</p>
-<p align="center"><em>Swin Transformer branch visualization.</em></p>
+</div>
 
-<p align="center">
-  <img src="results/explainability/gradcam_fused.png" alt="Fused BDS-CAFNet Grad-CAM++ Visualization" width="80%">
-</p>
-<p align="center"><em>Fused BDS-CAFNet Grad-CAM++ visualization.</em></p>
+### CAFM Attention Visualization
 
-<p align="center">
-  <img src="results/explainability/cafm_attention.png" alt="CAFM Attention Visualization" width="80%">
-</p>
-<p align="center"><em>Cross-attention visualization.</em></p>
+The CAFM attention maps provide insight into the interaction between local DenseNet201 features and global Swin Transformer features.
 
-<p align="center">
-  <img src="results/explainability/tsne_visualization.png" alt="t-SNE Feature Visualization" width="80%">
-</p>
-<p align="center"><em>Learned feature-space visualization.</em></p>
+<div align="center">
+
+<img src="docs/results/cafm_attention.png" width="100%" alt="CAFM Cross-Attention Visualization">
+
+**Figure 10. Cross-attention visualization generated from the CAFM module.**
+
+</div>
+
+### t-SNE Feature Visualization
+
+t-SNE is used to visualize the distribution of learned feature representations in a lower-dimensional space.
+
+<div align="center">
+
+<img src="docs/results/tsne_features.png" width="85%" alt="t-SNE Feature Visualization">
+
+**Figure 11. t-SNE visualization of learned feature representations.**
+
+</div>
+
+---
+
+## Model Complexity
+
+The proposed architecture was designed and evaluated with consideration of computational resource limitations.
+
+| Model Specification | Value |
+|:---|---:|
+| Total Parameters | 49,416,491 |
+| Trainable Parameters | 46,046,889 |
+| Frozen Parameters | 3,369,602 |
+| Computational Complexity | 8.87 GMACs |
+| Approximate FLOPs | 17.75 GFLOPs |
+| Input Resolution | 224 × 224 × 3 |
+
+## Training Configuration
+
+The model was trained using a two-phase optimization strategy.
+
+| Configuration | Value |
+|:---|:---|
+| Deep Learning Framework | PyTorch 2.10.0 |
+| Python Version | 3.11 |
+| Accelerator | NVIDIA Tesla T4 (16 GB) |
+| Optimizer | AdamW |
+| Weight Decay | 0.05 |
+| Batch Size | 16 |
+| Random Seed | 42 |
+| Training Strategy | Two-Phase Training |
+| Phase 1 Learning Rate | 1 × 10⁻⁴ |
+| Phase 2 Backbone Learning Rate | 1 × 10⁻⁵ |
+| Phase 2 New Modules Learning Rate | 1 × 10⁻⁴ |
+| Learning Rate Scheduler | Cosine Annealing |
+| Minimum Learning Rate | 1 × 10⁻⁶ |
+| Loss Function | 0.6 Focal Loss + 0.4 Dice Loss |
+| Mixed Precision | Automatic Mixed Precision |
+| Early Stopping Patience | 8 |
 
 ---
 
@@ -412,243 +351,100 @@ BDS-CAFNet/
 │
 ├── README.md
 ├── LICENSE
-├── CITATION.cff
-├── requirements.txt
 ├── .gitignore
-│
-├── configs/
-│   ├── config.yaml
-│   └── class_names.json
-│
-├── data/
-│   ├── README.md
-│   └── sample_images/
-│
-├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_image_preprocessing.ipynb
-│   ├── 03_data_augmentation.ipynb
-│   ├── 04_baseline_experiments.ipynb
-│   ├── 05_bds_cafnet_training.ipynb
-│   ├── 06_model_evaluation.ipynb
-│   └── 07_explainable_ai.ipynb
-│
-├── src/
-│   ├── models/
-│   │   ├── densenet_branch.py
-│   │   ├── swin_branch.py
-│   │   ├── cafm.py
-│   │   ├── coordinate_attention.py
-│   │   └── bds_cafnet.py
-│   │
-│   ├── preprocessing/
-│   ├── training/
-│   ├── evaluation/
-│   └── explainability/
-│
-├── checkpoints/
-│   └── README.md
-│
-├── results/
-│   ├── figures/
-│   ├── confusion_matrix/
-│   ├── roc_curves/
-│   └── explainability/
-│
-├── deployment/
-│   ├── app.py
-│   ├── templates/
-│   └── static/
 │
 ├── docs/
 │   ├── architecture.svg
-│   └── assets/
+│   │
+│   ├── assets/
+│   │   └── bds-cafnet-banner.png
+│   │
+│   └── results/
+│       ├── dataset_samples.png
+│       ├── preprocessing_grid.png
+│       ├── confusion_matrix.png
+│       ├── roc_curve.png
+│       ├── training_curve.png
+│       ├── hybrid_comparison.png
+│       ├── gradcam.png
+│       ├── gradcam_plus_plus.png
+│       ├── cafm_attention.png
+│       └── tsne_features.png
 │
-└── tests/
-    └── test_model.py
+├── src/
+│   ├── models/
+│   ├── modules/
+│   ├── preprocessing/
+│   └── evaluation/
+│
+├── notebooks/
+│
+└── requirements.txt
 ```
 
-*The directory tree represents the recommended repository organization. Directory and file names should be adjusted to match the actual uploaded implementation.*
-
----
-
-## Installation
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/BDS-CAFNet.git
-
-cd BDS-CAFNet
-```
-
-### 2. Create a Virtual Environment
-
-```bash
-python -m venv venv
-```
-
-Activate the environment:
-
-**Windows**
-
-```bash
-venv\Scripts\activate
-```
-
-**Linux / macOS**
-
-```bash
-source venv/bin/activate
-```
-
-### 3. Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-Make sure the installed PyTorch and CUDA versions are compatible with your hardware.
-
-### 4. Prepare the Dataset
-
-Place the authorized dataset in the expected directory structure and update the configuration paths.
-
-```text
-data/
-├── train/
-├── validation/
-└── test/
-```
-
-The original clinical images are not distributed with this repository.
-
-### 5. Run the Model
-
-```bash
-python -m src.training.train
-```
-
-*The command assumes the training entry point is organized as shown in the recommended repository structure. Update it to match the actual implementation.*
-
-### 6. Evaluate the Model
-
-```bash
-python -m src.evaluation.evaluate
-```
-
-### 7. Run the Deployment Application
-
-```bash
-python deployment/app.py
-```
-
-*Deployment commands require the corresponding application files and an authorized trained checkpoint.*
-
----
-
-## Model Checkpoints
-
-Pretrained model weights are not included by default because of repository size considerations.
-
-If authorized weights are made available, they can be placed in:
-
-```text
-checkpoints/
-└── bds_cafnet_best.pth
-```
-
-For larger checkpoints, Git LFS or GitHub Releases can be used.
-
----
+*The structure above represents a suggested organization for the repository. Actual folders and scripts should reflect the files included in the published implementation.*
 
 ## Reproducibility
 
-The following experimental settings were used to support reproducibility:
+The experimental configuration includes a fixed random seed, controlled training settings, and a two-phase optimization strategy.
 
-- Fixed random seed of 42.
-- Stratified original-image partitioning.
-- Partition-wise augmentation.
-- ImageNet-pretrained backbones.
-- Two-phase training.
-- Automatic mixed-precision training.
-- Validation-based early stopping.
-- Best validation checkpoint restoration.
-
-Exact reproduction also requires access to the authorized original dataset, the corresponding preprocessing implementation, pretrained backbone weights and compatible software dependencies.
-
----
+For reproducibility, the implementation should retain the documented preprocessing operations, data partitioning strategy, augmentation settings, model configuration, and evaluation protocol.
 
 ## Limitations
 
-Although BDS-CAFNet achieved promising experimental results, several limitations should be considered:
+Although BDS-CAFNet achieved strong results on the evaluated dataset, several limitations should be considered:
 
-- The primary dataset contains 1,850 original images from 210 patients.
-- The dataset represents 15 dermatological categories and may not cover the full diversity of skin conditions.
-- Performance on external institutions and populations has not been established by the reported experiments.
-- Cross-attention visualization can exhibit concentrated attention patterns, requiring further analysis.
-- Explainability maps provide visual evidence of model behaviour but do not independently establish clinical validity.
+- The dataset contains a relatively limited number of original clinical images.
+- The evaluation was conducted using data from a specific clinical collection.
+- Performance on images from other hospitals and populations requires further external validation.
+- Attention and gradient-based visualizations provide interpretability insights but do not independently establish clinical correctness.
 
-Further external validation and broader clinical evaluation are necessary before considering real-world clinical use.
+Further evaluation using larger, multi-centre clinical datasets is necessary before considering real-world clinical deployment.
 
----
+## Ethical Considerations
 
-## Ethical Considerations and Medical Disclaimer
+This research uses primary clinical dermatological images obtained through an ethical data collection process involving consenting patients.
 
-This project is intended for academic research and experimental evaluation in dermatological image classification.
+Original patient images and identifiable clinical information are not included in this public repository. Any redistribution of clinical data requires appropriate patient consent and institutional authorization.
 
-The original clinical images were obtained from consenting patients under the research process described in the thesis.
-
-Patient privacy and institutional data-sharing requirements must be respected when accessing, processing or distributing clinical images.
-
-**BDS-CAFNet is not a substitute for professional medical diagnosis, dermatological examination or clinical decision-making.** Its predictions should not be used as the sole basis for treatment or medical decisions.
-
----
+**BDS-CAFNet is a research framework and is not intended to replace professional dermatological diagnosis or clinical decision-making.**
 
 ## Citation
 
-If you use this work in academic research, please cite the original thesis.
-
-**Authors:** Md. Maruf Kadir and Mehedi Hasan Rafi  
-**Department:** Computer Science and Engineering  
-**Institution:** Daffodil International University, Bangladesh
+If you use or refer to this research, please cite the corresponding thesis or publication after its official bibliographic details are finalized.
 
 ```bibtex
-@thesis{kadir2026bdscafnet,
-  author = {Kadir, Md. Maruf and Rafi, Mehedi Hasan},
-  title = {BDS-CAFNet: DenseNet-Swin Cross-Attention Fusion Network for Skin Disease Classification},
-  school = {Daffodil International University},
-  year = {2026},
-  type = {Undergraduate Thesis}
+@misc{bds_cafnet,
+  title        = {BDS-CAFNet: DenseNet-Swin Cross-Attention
+                  Fusion Network for Dermatological Image Classification},
+  author       = {Mehedi Hasan Rafi and Md. Maruf Kadir},
+  year         = {2026},
+  note         = {Research project}
 }
 ```
 
-*Verify the official thesis title and year against the final institutional submission before publication.*
-
----
+*Please update this citation if an official publication with a DOI or final bibliographic information becomes available.*
 
 ## Acknowledgements
 
-We express our sincere gratitude to our research supervisor, faculty members and the clinical contributors who supported this research.
-
-We also acknowledge the Bangladesh Institute of Dermatology, STD and AIDS, for its role in the clinical data collection process described in this work.
-
----
+The authors acknowledge the support of the Department of Computer Science and Engineering, Daffodil International University, and the clinical collaboration that made the primary dermatological image collection possible.
 
 ## Authors
 
-**Md. Maruf Kadir**  
-Department of Computer Science and Engineering  
-Daffodil International University, Bangladesh
-
 **Mehedi Hasan Rafi**  
+**Md. Maruf Kadir**
+
 Department of Computer Science and Engineering  
 Daffodil International University, Bangladesh
 
 ---
 
-<p align="center">
-  <strong>BDS-CAFNet</strong>
-  <br>
-  <em>Bridging Local and Global Features for Explainable Dermatological Image Classification.</em>
-</p>
+<div align="center">
+
+### BDS-CAFNet
+
+**Local Features. Global Context. Attention-Based Fusion.**
+
+*Towards explainable and reliable dermatological image classification.*
+
+</div>
