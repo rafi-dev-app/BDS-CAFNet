@@ -67,7 +67,7 @@ BDS-CAFNet follows a dual-branch architecture in which two complementary backbon
 
 <div align="center">
 
-<img src="docs/result/proposed_model_overview.svg" width="100%" alt="BDS-CAFNet Dual-Branch Architecture">
+<img src="docs/result/proposed_model_overview.jpg" width="100%" alt="BDS-CAFNet Dual-Branch Architecture">
 
 **Figure 1. Overall architecture of the proposed BDS-CAFNet framework.**
 
